@@ -1,9 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:spam_detector/components/profile.dart';
 
 class Navbar extends StatelessWidget {
   final String title;
+  final VoidCallback onSearchTap;
 
-  const Navbar({super.key, required this.title});
+  const Navbar({
+    super.key,
+    required this.title,
+    required this.onSearchTap,
+  });
+
+  void _showProfile(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Profile(),
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,18 +32,22 @@ class Navbar extends StatelessWidget {
           Text(
             title,
             style: const TextStyle(
-              fontSize: 24,
+              fontSize: 26,
               fontWeight: FontWeight.bold,
             ),
           ),
           Spacer(),
-          Icon(Icons.search),
-          SizedBox(
-            width: 10,
+          GestureDetector(
+            onTap: onSearchTap,
+            child: Icon(Icons.search),
           ),
-          CircleAvatar(
-            backgroundColor: Colors.grey[300],
-            child: Icon(Icons.person, color: Colors.grey[600]),
+          SizedBox(width: 10),
+          GestureDetector(
+            onTap: () => _showProfile(context),
+            child: CircleAvatar(
+              backgroundColor: Colors.grey[300],
+              child: Icon(Icons.person, color: Colors.grey[600]),
+            ),
           ),
         ],
       ),

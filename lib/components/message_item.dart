@@ -14,72 +14,53 @@ class MessageItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: isSpam ? Colors.grey[100] : Colors.white,
-        borderRadius: BorderRadius.circular(15),
+    return ListTile(
+      contentPadding: EdgeInsets.symmetric(horizontal: 8),
+      leading: CircleAvatar(
+        radius: 25,
+        backgroundColor: Colors.grey[300],
+        child: Text(
+          name[0],
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
-      child: Row(
-        children: [
-          // Profile Circle
-          CircleAvatar(
-            radius: 25,
-            backgroundColor: Colors.grey[300],
-            child: Icon(Icons.person, color: Colors.grey[600]),
-          ),
-          const SizedBox(width: 12),
-          // Message Content
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  message,
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                  ),
-                ),
-              ],
+      title: Text(
+        name,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 16,
+        ),
+      ),
+      subtitle: Text(
+        message,
+        style: TextStyle(
+          color: Colors.grey[600],
+          fontSize: 14,
+        ),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+      trailing: Container(
+        width: 24,
+        height: 24,
+        decoration: BoxDecoration(
+          color: isSpam ? Colors.red[400] : Colors.green[100],
+          shape: BoxShape.circle,
+        ),
+        child: Center(
+          child: Text(
+            !isSpam ? "1" : "!",
+            style: TextStyle(
+              color: isSpam ? Colors.white : Colors.green[800],
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
             ),
           ),
-          // Notification or Edit Icon
-          Container(
-            width: 24,
-            height: 24,
-            decoration: BoxDecoration(
-              color: isSpam ? Colors.red[400] : Colors.green[100],
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: isSpam
-                  ? Text(
-                      "1",
-                      style: TextStyle(
-                        color: Colors.red[900],
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    )
-                  : Text(
-                      "1",
-                      style: TextStyle(
-                        color: Colors.green[800],
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
