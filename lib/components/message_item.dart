@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spam_detector/pages/chat_page.dart';
 
 class MessageItem extends StatelessWidget {
   final String name;
@@ -62,6 +63,17 @@ class MessageItem extends StatelessWidget {
           ),
         ),
       ),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChatPage(
+              name: name,
+              number: "+250 788 123 456", // Replace with actual number
+            ),
+          ),
+        );
+      },
     );
   }
 }
