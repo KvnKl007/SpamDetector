@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:spam_detector/pages/settings_page.dart';
 
 class Profile extends StatelessWidget {
   const Profile({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? Colors.grey[900] : Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
       ),
       child: Column(
@@ -20,7 +23,7 @@ class Profile extends StatelessWidget {
             height: 4,
             margin: EdgeInsets.only(bottom: 20),
             decoration: BoxDecoration(
-              color: Colors.grey[300],
+              color: isDark ? Colors.grey[700] : Colors.grey[300],
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -28,8 +31,9 @@ class Profile extends StatelessWidget {
           // Profile Picture
           CircleAvatar(
             radius: 50,
-            backgroundColor: Colors.grey[300],
-            child: Icon(Icons.person, size: 50, color: Colors.grey[600]),
+            backgroundColor: isDark ? Colors.grey[800] : Colors.grey[300],
+            child: Icon(Icons.person,
+                size: 50, color: isDark ? Colors.grey[300] : Colors.grey[600]),
           ),
           SizedBox(height: 16),
 
@@ -45,17 +49,22 @@ class Profile extends StatelessWidget {
 
           // Action Buttons
           ListTile(
-            leading: Icon(Icons.edit, color: Colors.black),
+            leading: Icon(Icons.edit,
+                color: isDark ? Colors.grey[100] : Colors.black),
             title: Text('Edit Profile'),
             onTap: () {
               // Handle edit profile
             },
           ),
           ListTile(
-            leading: Icon(Icons.settings, color: Colors.black),
+            leading: Icon(Icons.settings,
+                color: isDark ? Colors.grey[100] : Colors.black),
             title: Text('Settings'),
             onTap: () {
-              // Handle settings
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingsPage()),
+              );
             },
           ),
           ListTile(

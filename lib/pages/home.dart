@@ -10,10 +10,48 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   bool isPrimaryTab = true;
   bool isSearchVisible = false;
   String searchQuery = '';
+  late AnimationController _searchAnimationController;
+  late Animation<double> _searchAnimation;
+  final PageController _pageController = PageController();
+
+  @override
+  void initState() {
+    super.initState();
+    _searchAnimationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 300),
+    );
+    _searchAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(
+        parent: _searchAnimationController,
+        curve: Curves.easeInOut,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _searchAnimationController.dispose();
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void toggleSearch() {
+    setState(() {
+      isSearchVisible = !isSearchVisible;
+      if (isSearchVisible) {
+        _searchAnimationController.forward();
+      } else {
+        _searchAnimationController.reverse();
+        searchQuery = ''; // Clear search when hiding search bar
+      }
+    });
+  }
 
   // Sample message data - you can replace this with your actual data source
   final List<Map<String, String>> messages = [
@@ -67,6 +105,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -74,38 +113,43 @@ class _HomePageState extends State<HomePage> {
             // Navbar
             Navbar(
               title: "Messages",
-              onSearchTap: () {
-                setState(() {
-                  isSearchVisible = !isSearchVisible;
-                  if (!isSearchVisible) {
-                    searchQuery = ''; // Clear search when hiding search bar
-                  }
-                });
-              },
+              onSearchTap: toggleSearch,
             ),
 
-            // Search Input
-            if (isSearchVisible)
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: TextField(
-                  onChanged: (value) {
-                    setState(() {
-                      searchQuery = value;
-                    });
-                  },
-                  decoration: InputDecoration(
-                    hintText: 'Search messages...',
-                    prefixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
+            // Search Input with Animation
+            SizeTransition(
+              sizeFactor: _searchAnimation,
+              axisAlignment: -1,
+              child: SlideTransition(
+                position: Tween<Offset>(
+                  begin: Offset(0, -0.5),
+                  end: Offset.zero,
+                ).animate(_searchAnimation),
+                child: FadeTransition(
+                  opacity: _searchAnimation,
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: TextField(
+                      onChanged: (value) {
+                        setState(() {
+                          searchQuery = value;
+                        });
+                      },
+                      decoration: InputDecoration(
+                        hintText: 'Search messages...',
+                        prefixIcon: Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        filled: true,
+                        fillColor: isDark ? Colors.grey[900] : Colors.grey[100],
+                      ),
                     ),
-                    filled: true,
-                    fillColor: Colors.grey[100],
                   ),
                 ),
               ),
+            ),
 
             // Tabs
             Padding(
@@ -114,7 +158,14 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Expanded(
                     child: GestureDetector(
-                      onTap: () => setState(() => isPrimaryTab = true),
+                      onTap: () {
+                        setState(() => isPrimaryTab = true);
+                        _pageController.animateToPage(
+                          0,
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      },
                       child: Container(
                         padding: EdgeInsets.symmetric(vertical: 12),
                         decoration: BoxDecoration(
@@ -136,7 +187,14 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(width: 12),
                   Expanded(
                     child: GestureDetector(
-                      onTap: () => setState(() => isPrimaryTab = false),
+                      onTap: () {
+                        setState(() => isPrimaryTab = false);
+                        _pageController.animateToPage(
+                          1,
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      },
                       child: Container(
                         padding: EdgeInsets.symmetric(vertical: 12),
                         decoration: BoxDecoration(
@@ -159,15 +217,35 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-            // Messages List
-            MessageList(
-              isSpam: !isPrimaryTab,
-              searchQuery: searchQuery,
-              messages: messages,
+            // PageView for swipeable content
+            Expanded(
+              child: PageView(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() {
+                    isPrimaryTab = index == 0;
+                  });
+                },
+                children: [
+                  // Primary Messages
+                  MessageList(
+                    isSpam: false,
+                    searchQuery: searchQuery,
+                    messages: messages,
+                  ),
+                  // Spam Messages
+                  MessageList(
+                    isSpam: true,
+                    searchQuery: searchQuery,
+                    messages: messages,
+                  ),
+                ],
+              ),
             ),
           ],
         ),
       ),
+      // floating button
       floatingActionButton: isPrimaryTab
           ? GestureDetector(
               onTap: () {

@@ -29,12 +29,19 @@ class getStarted extends StatelessWidget {
               SizedBox(height: screenHeight * 0.02),
               Text(
                 'SpamSheild SMS',
-                style: TextStyle(fontSize: 36, fontWeight: FontWeight.w900),
+                style: TextStyle(
+                  fontSize: 36,
+                  fontWeight: FontWeight.w900,
+                  color: Colors.black,
+                ),
                 textAlign: TextAlign.center,
               ),
               Text(
                 'SMS Spam filtering',
-                style: TextStyle(fontSize: 24),
+                style: TextStyle(
+                  fontSize: 24,
+                  color: Colors.black,
+                ),
                 textAlign: TextAlign.center,
               ),
               const Spacer(),

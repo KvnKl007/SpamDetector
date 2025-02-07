@@ -44,6 +44,7 @@ class _NewMessagePageState extends State<NewMessagePage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFFFD33D),
@@ -72,7 +73,7 @@ class _NewMessagePageState extends State<NewMessagePage> {
                   borderRadius: BorderRadius.circular(25),
                 ),
                 filled: true,
-                fillColor: Colors.grey[100],
+                fillColor: isDark ? Colors.grey[900] : Colors.grey[100],
               ),
             ),
           ),

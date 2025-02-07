@@ -25,23 +25,21 @@ class MessageList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: ListView.builder(
-        padding: EdgeInsets.symmetric(horizontal: 8),
-        itemCount: filteredMessages.length,
-        itemBuilder: (context, index) {
-          final message = filteredMessages[index];
-          return Column(
-            children: [
-              MessageItem(
-                name: message["name"]!,
-                message: message["message"]!,
-                isSpam: isSpam,
-              ),
-            ],
-          );
-        },
-      ),
+    return ListView.builder(
+      padding: EdgeInsets.symmetric(horizontal: 8),
+      itemCount: filteredMessages.length,
+      itemBuilder: (context, index) {
+        final message = filteredMessages[index];
+        return Column(
+          children: [
+            MessageItem(
+              name: message["name"]!,
+              message: message["message"]!,
+              isSpam: isSpam,
+            ),
+          ],
+        );
+      },
     );
   }
 }
